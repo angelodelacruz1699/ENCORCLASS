@@ -1,0 +1,45 @@
+
+conf t
+feature ospf
+feature nv overlay
+feature vn-segment-vlan-based
+system jumbomtu 9216
+end
+checkpoint basicvxlan
+
+
+step2: CONFIGURE VXLAN INTERFACE
+JP side:
+config t
+router ospf 10
+exit
+int e1/1
+ no switchport 
+ ip add 100.1.1.2/30
+ ip route ospf 10 area 0
+ no shutdown
+exit
+
+int loopback 0
+ip add 20.20.20.20/32
+ip router ospf 10 area 0
+exit
+
+!start of simple VXLAN config
+vlan 50
+vn-segment 5000
+exit
+interface eth 1/5-6
+switchport 
+switchport access vlan 50
+exit
+interface NVE 1
+no shutdown
+source-interface loopback 0
+member vni 5000
+ ingress-replication protocol static
+   peer-ip 10.10.10.10
+end
+
+
+HOW TO CHECK VXLAN:

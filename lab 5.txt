@@ -1,0 +1,22 @@
+lab 5:
+@coreTaas:
+
+conf t
+hostname CoreTaas-PLDT
+track 1 int gi 0/1 line-protocol
+int vlan 1
+standby 1 ip 10.31.1.6
+standby 1 preempt
+standby 1 priority 150
+standby 1 track 1 decrement 60
+end
+sh standby
+
+
+@coreBaba:
+hostname CorebabaGlobe
+int vlan 1
+standby 1 ip 10.31.1.6
+standby 1 preempt
+standby 1 priority 100
+end
